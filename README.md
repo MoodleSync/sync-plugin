@@ -3,7 +3,7 @@ This plugin for Moodle (type: local) adds serveral functions to the Moodle Web S
 Those fuctions allow users and external services to remotely create and move new course modules.
 Furthermore an external service (called "Course Sync Extension Service") containing the newly added functions and other core web service functions, which are helpful to use the added functions, is added.
 
-The plugin is developed to work with the desktop application [MoodleSync](https://github.com/MoodleSync/sync-plugin), used for file synchronization between a local directory and the learning platform Moodle.
+The plugin is developed to work with the desktop application [MoodleSync](https://github.com/MoodleSync/sync-app), used for file synchronization between a local directory and the learning platform Moodle.
 
 Following functions are added:
 Function | Description | Note
