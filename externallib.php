@@ -388,6 +388,7 @@ class local_sync_service_external extends external_api {
                 'itemid' => new external_value( PARAM_TEXT, 'id of the upload' ),
                 'displayname' => new external_value( PARAM_TEXT, 'displayed mod name' ),
                 'time' => new external_value( PARAM_TEXT, 'defines the mod. visibility', VALUE_DEFAULT, null ),
+                'visible' => new external_value( PARAM_TEXT, 'defines the mod. visibility' ),
                 'beforemod' => new external_value( PARAM_TEXT, 'mod to set before', VALUE_DEFAULT, null ),
             )
         );
@@ -401,10 +402,11 @@ class local_sync_service_external extends external_api {
      * @param $displayname Displayname of the Module.
      * @param $itemid Files in same draft area to upload.
      * @param $time availability time.
+     * @param $visible visible for course members.
      * @param $beforemod Optional parameter, a Module where the new Module should be placed before.
      * @return $update Message: Successful and $cmid of the new Module.
      */
-    public static function local_sync_service_add_new_course_module_directory($courseid, $sectionnum, $itemid, $displayname, $time = null, $beforemod = null) {
+    public static function local_sync_service_add_new_course_module_directory($courseid, $sectionnum, $itemid, $displayname, $time = null, $visible,$beforemod = null) {
         global $DB, $CFG;
         require_once($CFG->dirroot . '/mod/' . '/folder' . '/lib.php');
 
@@ -417,6 +419,7 @@ class local_sync_service_external extends external_api {
                 'itemid' => $itemid,
                 'displayname' => $displayname,
                 'time' => $time,
+                'visible' => $visible,
                 'beforemod' => $beforemod,
             )
         );
@@ -435,7 +438,9 @@ class local_sync_service_external extends external_api {
         $cm->module     = $DB->get_field('modules', 'id', array( 'name' => $modulename ));
         $cm->section    = $params[ 'sectionnum' ];
         if (!is_null($params[ 'time' ])) {
-            $cm->availability = "{\"op\":\"&\",\"c\":[{\"type\":\"date\",\"d\":\">=\",\"t\":" . $params[ 'time' ] . "}],\"showc\":[true]}";
+            $cm->availability = "{\"op\":\"&\",\"c\":[{\"type\":\"date\",\"d\":\">=\",\"t\":" . $params[ 'time' ] . "}],\"showc\":[" . $params[ 'visible' ] . "]}";
+        }  else if ( $params['visible'] === 'false' ) {
+            $cm->visible = 0;
         }
         $cm->id = add_course_module($cm);
         $cmid = $cm->id;
@@ -449,11 +454,11 @@ class local_sync_service_external extends external_api {
         $instance->files = $params[ 'itemid' ];
         $instance->id = folder_add_instance($instance, null);
 
-        $section->id = course_add_cm_to_section($params[ 'courseid' ], $cmid, $params[ 'sectionnum' ], $params[ 'beforemod' ]);
+        $section->id = course_add_cm_to_section($params['courseid'], $cmid, $params['sectionnum'], $params['beforemod']);
 
         $update = [
             'message' => 'Successful',
-            'id' => $cmid,
+            'id' => $instance->id,
         ];
         return $update;
     }
@@ -479,25 +484,21 @@ class local_sync_service_external extends external_api {
         return new external_function_parameters(
             array(
                 'courseid' => new external_value( PARAM_TEXT, 'id of course' ),
-                'cmid' => new external_value( PARAM_TEXT, 'id of the module' ),
                 'itemid' => new external_value( PARAM_TEXT, 'id of the upload' ),
-                'displayname' => new external_value( PARAM_TEXT, 'displayed mod name' ),
-                'instanceid' => new external_value( PARAM_TEXT, 'instance id of folder' ),
+                'contextid' => new external_value( PARAM_TEXT, 'contextid of folder' ),
             )
         );
     }
 
     /**
      * This method implements the logic for the API-Call.
-     * IMPORTANT: Still in progress, currently not working.
      *
      * @param $courseid The course id.
-     * @param $cmid The module id.
-     * @param $itemid File to update.
-     * @param $instanceid The instance id.
+     * @param $itemid File(-s) to add.
+     * @param $contextid Modules contextid.
      * @return $update Message: Successful.
      */
-    public static function local_sync_service_add_files_to_directory($courseid, $cmid, $itemid, $instanceid) {
+    public static function local_sync_service_add_files_to_directory($courseid, $itemid, $contextid) {
         global $CFG;
         require_once($CFG->dirroot . '/mod/' . '/folder' . '/lib.php');
 
@@ -506,23 +507,19 @@ class local_sync_service_external extends external_api {
             self::local_sync_service_add_files_to_directory_parameters(),
             array(
                 'courseid' => $courseid,
-                'cmid' => $cmid,
                 'itemid' => $itemid,
-                'instanceid' => $instanceid,
+                'contextid' => $contextid,
             )
         );
 
         // Ensure the current user has required permission in this course.
-        $context = context_course::instance($params[ 'courseid' ]);
+        $context = context_course::instance($params['courseid']);
         self::validate_context($context);
 
         // Required permissions.
-        require_capability('mod/folder:addinstance', $context);
-
-        $cmid        = $params[ 'cmid' ];
-        $draftitemid = $params[ 'itemid' ];
-        file_save_draft_area_files($draftitemid, $params[ 'instanceid' ], 'mod_folder', 'content', $draftitemid, array(
-            'subdirs' => true));
+        require_capability('mod/folder:managefiles', $context);
+        
+        file_merge_files_from_draft_area_into_filearea($params['itemid'], $params['contextid'], 'mod_folder', 'content', 0);
 
         $update = [
             'message' => 'Successful',
