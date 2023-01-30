@@ -67,18 +67,18 @@ class local_sync_service_external extends external_api {
         );
 
         // Ensure the current user has required permission in this course.
-        $context = context_course::instance($params[ 'courseid' ]);
+        $context = context_course::instance($params['courseid']);
         self::validate_context($context);
 
         // Required permissions.
         require_capability('block/section_links:addinstance', $context);
 
-        $cw = course_create_section($params[ 'courseid' ], $params[ 'sectionnum' ], false);
+        $cw = course_create_section($params['courseid'], $params['sectionnum'], false);
 
         $section = $DB->get_record('course_sections', array('id' => $cw->id), '*', MUST_EXIST);
         $course = $DB->get_record('course', array('id' => $section->course), '*', MUST_EXIST);
 
-        $data[ 'name' ] = $params[ 'sectionname' ];
+        $data['name'] = $params['sectionname'];
 
         course_update_section($course, $section, $data);
 
@@ -151,37 +151,37 @@ class local_sync_service_external extends external_api {
         );
 
         // Ensure the current user has required permission in this course.
-        $context = context_course::instance($params[ 'courseid' ]);
+        $context = context_course::instance($params['courseid']);
         self::validate_context($context);
 
         // Required permissions.
         require_capability('mod/url:addinstance', $context);
 
         $instance = new \stdClass();
-        $instance->course = $params[ 'courseid' ];
-        $instance->name = $params[ 'urlname' ];
+        $instance->course = $params['courseid'];
+        $instance->name = $params['urlname'];
         $instance->intro = null;
         $instance->introformat = \FORMAT_HTML;
-        $instance->externalurl = $params[ 'url' ];
+        $instance->externalurl = $params['url'];
         $instance->id = url_add_instance($instance, null);
 
         $modulename = 'url';
 
         $cm = new \stdClass();
-        $cm->course     = $params[ 'courseid' ];
+        $cm->course     = $params['courseid'];
         $cm->module     = $DB->get_field( 'modules', 'id', array('name' => $modulename) );
         $cm->instance   = $instance->id;
-        $cm->section    = $params[ 'sectionnum' ];
-        if (!is_null($params[ 'time' ])) {
-            $cm->availability = "{\"op\":\"&\",\"c\":[{\"type\":\"date\",\"d\":\">=\",\"t\":" . $params[ 'time' ] . "}],\"showc\":[" . $params[ 'visible' ] . "]}";
-        } else if ( $params[ 'visible' ] === 'false' ) {
+        $cm->section    = $params['sectionnum'];
+        if (!is_null($params['time'])) {
+            $cm->availability = "{\"op\":\"&\",\"c\":[{\"type\":\"date\",\"d\":\">=\",\"t\":" . $params['time'] . "}],\"showc\":[" . $params['visible'] . "]}";
+        } else if ( $params['visible'] === 'false' ) {
             $cm->visible = 0;
         }
 
         $cm->id = add_course_module( $cm );
         $cmid = $cm->id;
 
-        $section->id = course_add_cm_to_section($params[ 'courseid' ], $cmid, $params[ 'sectionnum' ], $params[ 'beforemod' ]);
+        $section->id = course_add_cm_to_section($params['courseid'], $cmid, $params['sectionnum'], $params['beforemod']);
 
         $update = [
             'message' => 'Successful',
@@ -253,7 +253,7 @@ class local_sync_service_external extends external_api {
         );
 
         // Ensure the current user has required permission in this course.
-        $context = context_course::instance($params[ 'courseid' ]);
+        $context = context_course::instance($params['courseid']);
         self::validate_context($context);
 
         // Required permissions.
@@ -262,28 +262,28 @@ class local_sync_service_external extends external_api {
         $modulename = 'resource';
 
         $cm = new \stdClass();
-        $cm->course     = $params[ 'courseid' ];
+        $cm->course     = $params['courseid'];
         $cm->module     = $DB->get_field('modules', 'id', array( 'name' => $modulename ));
-        $cm->section    = $params[ 'sectionnum' ];
-        if (!is_null($params[ 'time' ])) {
-            $cm->availability = "{\"op\":\"&\",\"c\":[{\"type\":\"date\",\"d\":\">=\",\"t\":" . $params[ 'time' ] . "}],\"showc\":[" . $params[ 'visible' ] . "]}";
-        } else if ( $params[ 'visible' ] === 'false' ) {
+        $cm->section    = $params['sectionnum'];
+        if (!is_null($params['time'])) {
+            $cm->availability = "{\"op\":\"&\",\"c\":[{\"type\":\"date\",\"d\":\">=\",\"t\":" . $params['time'] . "}],\"showc\":[" . $params['visible'] . "]}";
+        } else if ( $params['visible'] === 'false' ) {
             $cm->visible = 0;
         }
         $cm->id = add_course_module($cm);
         $cmid = $cm->id;
 
         $instance = new \stdClass();
-        $instance->course = $params[ 'courseid' ];
-        $instance->name = $params[ 'displayname' ];
+        $instance->course = $params['courseid'];
+        $instance->name = $params['displayname'];
         $instance->intro = null;
         $instance->introformat = \FORMAT_HTML;
         $instance->coursemodule = $cmid;
 
-        $instance->files = $params[ 'itemid' ];
+        $instance->files = $params['itemid'];
         $instance->id = resource_add_instance($instance, null);
 
-        $section->id = course_add_cm_to_section($params[ 'courseid' ], $cmid, $params[ 'sectionnum' ], $params[ 'beforemod' ]);
+        $section->id = course_add_cm_to_section($params['courseid'], $cmid, $params['sectionnum'], $params['beforemod']);
 
         $update = [
             'message' => 'Successful',
@@ -342,10 +342,10 @@ class local_sync_service_external extends external_api {
         );
 
         // Ensure the current user has required permission.
-        $modcontext = context_module::instance( $params[ 'cmid' ] );
+        $modcontext = context_module::instance( $params['cmid'] );
         self::validate_context( $modcontext );
 
-        $cm = get_coursemodule_from_id('', $params[ 'cmid' ]);
+        $cm = get_coursemodule_from_id('', $params['cmid']);
 
         // Ensure the current user has required permission in this course.
         $context = context_course::instance($cm->course);
@@ -354,9 +354,9 @@ class local_sync_service_external extends external_api {
         // Required permissions.
         require_capability('moodle/course:movesections', $context);
 
-        $section = $DB->get_record('course_sections', array( 'id' => $params[ 'sectionid' ], 'course' => $cm->course ));
+        $section = $DB->get_record('course_sections', array( 'id' => $params['sectionid'], 'course' => $cm->course ));
 
-        moveto_module($cm, $section, $params[ 'beforemod' ]);
+        moveto_module($cm, $section, $params['beforemod']);
 
         $update = [
             'message' => 'Successful',
