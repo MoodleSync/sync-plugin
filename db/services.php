@@ -76,7 +76,7 @@ $functions = array(
         'description' => 'Add files to folder',
         'type' => 'write',
         'ajax' => true,
-        'capabilities' => 'mod/folder:addinstance'
+        'capabilities' => 'mod/folder:managefiles'
     )
 
 
