@@ -439,7 +439,7 @@ class local_sync_service_external extends external_api {
         $cm->section    = $params['sectionnum'];
         if (!is_null($params['time'])) {
             $cm->availability = "{\"op\":\"&\",\"c\":[{\"type\":\"date\",\"d\":\">=\",\"t\":" . $params['time'] . "}],\"showc\":[" . $params['visible'] . "]}";
-        }  else if ( $params['visible'] === 'false' ) {
+        } else if ( $params['visible'] === 'false' ) {
             $cm->visible = 0;
         }
         $cm->id = add_course_module($cm);
