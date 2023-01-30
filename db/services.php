@@ -18,7 +18,7 @@
  * This class defines the functions and konfigurations of the external service.
  *
  * @package local_sync_service
- * @copyright 2022 Daniel Schröter
+ * @copyright 2023 Daniel Schröter
  * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
