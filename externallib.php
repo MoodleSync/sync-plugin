@@ -406,7 +406,7 @@ class local_sync_service_external extends external_api {
      * @param $beforemod Optional parameter, a Module where the new Module should be placed before.
      * @return $update Message: Successful and $cmid of the new Module.
      */
-    public static function local_sync_service_add_new_course_module_directory($courseid, $sectionnum, $itemid, $displayname, $time = null, $visible,$beforemod = null) {
+    public static function local_sync_service_add_new_course_module_directory($courseid, $sectionnum, $itemid, $displayname, $time = null, $visible, $beforemod = null) {
         global $DB, $CFG;
         require_once($CFG->dirroot . '/mod/' . '/folder' . '/lib.php');
 
@@ -425,7 +425,7 @@ class local_sync_service_external extends external_api {
         );
 
         // Ensure the current user has required permission in this course.
-        $context = context_course::instance($params[ 'courseid' ]);
+        $context = context_course::instance($params['courseid']);
         self::validate_context($context);
 
         // Required permissions.
@@ -434,11 +434,11 @@ class local_sync_service_external extends external_api {
         $modulename = 'folder';
 
         $cm = new \stdClass();
-        $cm->course     = $params[ 'courseid' ];
+        $cm->course     = $params['courseid'];
         $cm->module     = $DB->get_field('modules', 'id', array( 'name' => $modulename ));
-        $cm->section    = $params[ 'sectionnum' ];
-        if (!is_null($params[ 'time' ])) {
-            $cm->availability = "{\"op\":\"&\",\"c\":[{\"type\":\"date\",\"d\":\">=\",\"t\":" . $params[ 'time' ] . "}],\"showc\":[" . $params[ 'visible' ] . "]}";
+        $cm->section    = $params['sectionnum'];
+        if (!is_null($params['time'])) {
+            $cm->availability = "{\"op\":\"&\",\"c\":[{\"type\":\"date\",\"d\":\">=\",\"t\":" . $params['time'] . "}],\"showc\":[" . $params['visible'] . "]}";
         }  else if ( $params['visible'] === 'false' ) {
             $cm->visible = 0;
         }
@@ -446,12 +446,12 @@ class local_sync_service_external extends external_api {
         $cmid = $cm->id;
 
         $instance = new \stdClass();
-        $instance->course = $params[ 'courseid' ];
-        $instance->name = $params[ 'displayname' ];
+        $instance->course = $params['courseid'];
+        $instance->name = $params['displayname'];
         $instance->coursemodule = $cmid;
         $instance->introformat = FORMAT_HTML;
-        $instance->intro = '<p>'.$params[ 'displayname' ].'</p>';
-        $instance->files = $params[ 'itemid' ];
+        $instance->intro = '<p>'.$params['displayname'].'</p>';
+        $instance->files = $params['itemid'];
         $instance->id = folder_add_instance($instance, null);
 
         $section->id = course_add_cm_to_section($params['courseid'], $cmid, $params['sectionnum'], $params['beforemod']);
