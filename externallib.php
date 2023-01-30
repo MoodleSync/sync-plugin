@@ -518,7 +518,7 @@ class local_sync_service_external extends external_api {
 
         // Required permissions.
         require_capability('mod/folder:managefiles', $context);
-        
+
         file_merge_files_from_draft_area_into_filearea($params['itemid'], $params['contextid'], 'mod_folder', 'content', 0);
 
         $update = [
