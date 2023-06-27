@@ -94,7 +94,8 @@ $services = array(
             'core_course_get_contents',
             'core_enrol_get_users_courses',
             'core_webservice_get_site_info',
-            'core_course_delete_modules'
+            'core_course_delete_modules',
+            'core_course_get_user_administration_options'
         ),
         'restrictedusers' => 1,
         'enabled' => 1,
