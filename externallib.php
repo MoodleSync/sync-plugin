@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
-/**
- * Class which contains the implementations of the added functions.
- *
- * @package local_sync_service
- * @copyright 2022 Daniel Schröter
- * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 use core_completion\progress;
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir . '/externallib.php');
@@ -31,6 +23,13 @@ require_once($CFG->dirroot . '/course/lib.php');
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Class which contains the implementations of the added functions.
+ *
+ * @package local_sync_service
+ * @copyright 2022 Daniel Schröter
+ * @license https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class local_sync_service_external extends external_api {
     /**
      * Defines the necessary method parameters.
