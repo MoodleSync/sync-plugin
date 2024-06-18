@@ -21,3 +21,4 @@ Usage:
 * Usage of the "REST (returning JSON)"- web service protocol.
 * To install the plugin, you may use the in-build plugin installation interface. Or you can unzip the archive and copy the folder "sync_service" into the directory "\server\moodle\local". Afterwards restart Moodle, log-in as an admin and follow the installation process.
 * To use the added fuctions, either enable and use the added external service (file upload and file download must be allowed) or create a new external service.
+* **Be aware: the plugins setting "restrictedusers" is disabled.**
