@@ -77,9 +77,25 @@ $functions = array(
         'type' => 'write',
         'ajax' => true,
         'capabilities' => 'mod/folder:managefiles'
+    ),
+    'local_course_add_new_course_module_page' => array(
+        'classname' => 'local_sync_service_external',
+        'methodname' => 'local_sync_service_add_new_course_module_page',
+        'classpath' => 'local/sync_service/externallib.php',
+        'description' => 'Add course module Page',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'mod/page:addinstance',
+    ),
+    'local_course_add_new_course_module_label' => array(
+        'classname' => 'local_sync_service_external',
+        'methodname' => 'local_sync_service_add_new_course_module_label',
+        'classpath' => 'local/sync_service/externallib.php',
+        'description' => 'Add course module Label',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'mod/label:addinstance',
     )
-
-
 );
 
 $services = array(
@@ -91,6 +107,8 @@ $services = array(
             'local_course_move_module_to_specific_position',
             'local_course_add_new_course_module_directory',
             'local_course_add_files_to_directory',
+            'local_course_add_new_course_module_page',
+            'local_course_add_new_course_module_label',
             'core_course_get_contents',
             'core_enrol_get_users_courses',
             'core_webservice_get_site_info',
